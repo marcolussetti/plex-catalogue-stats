@@ -5,6 +5,7 @@ from plexapi.server import PlexServer
 
 app = typer.Typer()
 
+
 def count_individuals(libraries, individual_types):
     counter = Counter()
     for library in libraries:
@@ -17,29 +18,48 @@ def count_individuals(libraries, individual_types):
     return counter
 
 
-
 @app.command()
-def top_actors(plex_token: str = typer.Option(...), plex_url: str = 'http://localhost:32400', libraries: str = '', n: int = 25):
+def top_actors(
+    plex_token: str = typer.Option(...),
+    plex_url: str = "http://localhost:32400",
+    libraries: str = "",
+    n: int = 25,
+):
     libraries = libraries.split(",") if len(libraries) else []
-    top_n('actors', plex_token, plex_url, libraries, n)
-
-
-@app.command()
-def top_directors(plex_token: str = typer.Option(...), plex_url: str = 'http://localhost:32400', libraries: str = '', n: int = 25):
-    libraries = libraries.split(",") if len(libraries) else []
-    top_n('directors', plex_token, plex_url, libraries, n)
+    top_n("actors", plex_token, plex_url, libraries, n)
 
 
 @app.command()
-def top_producers(plex_token: str = typer.Option(...), plex_url: str = 'http://localhost:32400', libraries: str = '', n: int = 25):
+def top_directors(
+    plex_token: str = typer.Option(...),
+    plex_url: str = "http://localhost:32400",
+    libraries: str = "",
+    n: int = 25,
+):
     libraries = libraries.split(",") if len(libraries) else []
-    top_n('producers', plex_token, plex_url, libraries, n)
+    top_n("directors", plex_token, plex_url, libraries, n)
 
 
 @app.command()
-def top_writers(plex_token: str = typer.Option(...), plex_url: str = 'http://localhost:32400', libraries: str = '', n: int = 25):
+def top_producers(
+    plex_token: str = typer.Option(...),
+    plex_url: str = "http://localhost:32400",
+    libraries: str = "",
+    n: int = 25,
+):
     libraries = libraries.split(",") if len(libraries) else []
-    top_n('writers', plex_token, plex_url, libraries, n)
+    top_n("producers", plex_token, plex_url, libraries, n)
+
+
+@app.command()
+def top_writers(
+    plex_token: str = typer.Option(...),
+    plex_url: str = "http://localhost:32400",
+    libraries: str = "",
+    n: int = 25,
+):
+    libraries = libraries.split(",") if len(libraries) else []
+    top_n("writers", plex_token, plex_url, libraries, n)
 
 
 def top_n(types: str, plex_token: str, plex_url: str, libraries: Sequence[str], n: int):
@@ -51,9 +71,9 @@ def top_n(types: str, plex_token: str, plex_url: str, libraries: Sequence[str], 
     else:
         plex_libraries = plex.library.sections()
 
-
     counter = count_individuals(plex_libraries, types)
     print(format_counter(counter, n))
+
 
 def format_counter(counter, n=10):
     output = ""
