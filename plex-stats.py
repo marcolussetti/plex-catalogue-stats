@@ -1,9 +1,25 @@
+#!/usr/bin/env python3
+# Get extended stats about most common things in your Plex catalogue
 import typer
 from typing import Sequence
 from collections import Counter
 from plexapi.server import PlexServer
 
 app = typer.Typer()
+conf = {
+    "plex_token": None,
+}
+
+
+@app.callback()
+def main(
+    plex_token: str = typer.Option(..., prompt=True),
+    plex_url: str = "http://localhost:32400",
+    libraries: str = "",
+):
+    conf["plex_token"] = plex_token
+    conf["plex_url"] = plex_url
+    conf["libraries"] = libraries.split(",") if len(libraries) else []
 
 
 def count_individuals(libraries, individual_types):
@@ -16,50 +32,6 @@ def count_individuals(libraries, individual_types):
             except:
                 pass
     return counter
-
-
-@app.command()
-def top_actors(
-    plex_token: str = typer.Option(...),
-    plex_url: str = "http://localhost:32400",
-    libraries: str = "",
-    n: int = 25,
-):
-    libraries = libraries.split(",") if len(libraries) else []
-    top_n("actors", plex_token, plex_url, libraries, n)
-
-
-@app.command()
-def top_directors(
-    plex_token: str = typer.Option(...),
-    plex_url: str = "http://localhost:32400",
-    libraries: str = "",
-    n: int = 25,
-):
-    libraries = libraries.split(",") if len(libraries) else []
-    top_n("directors", plex_token, plex_url, libraries, n)
-
-
-@app.command()
-def top_producers(
-    plex_token: str = typer.Option(...),
-    plex_url: str = "http://localhost:32400",
-    libraries: str = "",
-    n: int = 25,
-):
-    libraries = libraries.split(",") if len(libraries) else []
-    top_n("producers", plex_token, plex_url, libraries, n)
-
-
-@app.command()
-def top_writers(
-    plex_token: str = typer.Option(...),
-    plex_url: str = "http://localhost:32400",
-    libraries: str = "",
-    n: int = 25,
-):
-    libraries = libraries.split(",") if len(libraries) else []
-    top_n("writers", plex_token, plex_url, libraries, n)
 
 
 def top_n(types: str, plex_token: str, plex_url: str, libraries: Sequence[str], n: int):
@@ -87,6 +59,34 @@ def format_counter(counter, n=10):
         i += 1
 
     return output
+
+
+@app.command()
+def top_actors(
+    n: int = 25,
+):
+    top_n("actors", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
+
+
+@app.command()
+def top_directors(
+    n: int = 25,
+):
+    top_n("directors", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
+
+
+@app.command()
+def top_producers(
+    n: int = 25,
+):
+    top_n("producers", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
+
+
+@app.command()
+def top_writers(
+    n: int = 25,
+):
+    top_n("writers", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
 
 
 if __name__ == "__main__":
