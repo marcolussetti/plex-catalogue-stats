@@ -13,9 +13,17 @@ conf = {
 
 @app.callback()
 def main(
-    plex_token: str = typer.Option(..., prompt=True),
-    plex_url: str = "http://localhost:32400",
-    libraries: str = "",
+    plex_token: str = typer.Option(
+        ...,
+        prompt="You need to provide your plex token -- see https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/ ",
+        help="Plex X-Plex-Token, see https://support.plex.tv/articles/204059436-finding-an-authentication-token-x-plex-token/",
+    ),
+    plex_url: str = typer.Option(
+        "http://localhost:32400", help="Path to your Plex Server"
+    ),
+    libraries: str = typer.Option(
+        "", help="Optional list of comma separated Plex Library names"
+    ),
 ):
     conf["plex_token"] = plex_token
     conf["plex_url"] = plex_url
@@ -63,29 +71,41 @@ def format_counter(counter, n=10):
 
 @app.command()
 def top_actors(
-    n: int = 25,
+    n: int = typer.Option(25, help="Number of individuals to report"),
 ):
+    """
+    List the top n actors by appearences in the given libraries.
+    """
     top_n("actors", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
 
 
 @app.command()
 def top_directors(
-    n: int = 25,
+    n: int = typer.Option(25, help="Number of individuals to report"),
 ):
+    """
+    List the top n directors by appearences in the given libraries.
+    """
     top_n("directors", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
 
 
 @app.command()
 def top_producers(
-    n: int = 25,
+    n: int = typer.Option(25, help="Number of individuals to report"),
 ):
+    """
+    List the top n producers by appearences in the given libraries.
+    """
     top_n("producers", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
 
 
 @app.command()
 def top_writers(
-    n: int = 25,
+    n: int = typer.Option(25, help="Number of individuals to report"),
 ):
+    """
+    List the top n writers by appearences in the given libraries.
+    """
     top_n("writers", conf["plex_token"], conf["plex_url"], conf["libraries"], n)
 
 
